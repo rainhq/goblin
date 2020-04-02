@@ -188,7 +188,9 @@ func (xit *Xit) failed(msg string, stack []string) {
 
 func parseFlags() {
 	//Flag parsing
-	flag.Parse()
+	if !flag.Parsed() {
+		flag.Parse()
+	}
 	if *regexParam != "" {
 		runRegex = regexp.MustCompile(*regexParam)
 	} else {
@@ -202,9 +204,8 @@ var regexParam = flag.String("goblin.run", "", "Runs only tests which match the 
 var runRegex *regexp.Regexp
 
 func Goblin(t *testing.T, arguments ...string) *G {
-	if !flag.Parsed() {
-		parseFlags()
-	}
+	parseFlags()
+
 	g := &G{t: t, timeout: *timeout}
 	var fancy TextFancier
 	if *isTty {
